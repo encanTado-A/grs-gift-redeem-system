@@ -1,0 +1,18 @@
+code version control guide
+purpose: easy retrive of past code, record of progress
+
+!!! reminder: DO YOUR COMMENTING ON YOUR CODE. NO ONE BUT YOU WILL UNDERSTAND THE CODE!!!
+
+### When to do backup ###
+when you do any **update** in the program
+
+Update define:
+For every big update, update the version (V) by 1
+big update include:
+class added, function added
+
+For every small update, update the verson (V) by 0.1
+small update include
+(object) function changed
+
+made by YWH

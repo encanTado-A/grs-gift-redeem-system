@@ -1,0 +1,12 @@
+# Compiled Object files
+*.o
+
+# Executables
+*.exe
+
+# custom
+/.vscode
+*.pdf
+
+# hidden to protect priviacy
+/GRS_backupV1-V8/*.cpp
