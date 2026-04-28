@@ -2,7 +2,7 @@
 ## Project Overview
 ### Flowchart
 
-```
+```mermaid
 flowchart TD;
     %% 全局樣式定義
     classDef logic fill:#f9f,stroke:#333,stroke-width:2px;
@@ -37,7 +37,7 @@ flowchart TD;
     Opt1 & Opt2 --> MainMenu
     Opt4 --> End([Program End])
 
-    %% 關聯技術點
+    %% key skill point
     Success -.-> STL[(std::vector updates)]
 
     class MainMenu menu;
