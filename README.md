@@ -260,21 +260,27 @@ g++ --version
 **Step 2 — Create the `ms_compat.h` shim (one-time setup)**
 
 Create `ms_compat.h` **in the same folder as `system.cpp`** (i.e. the project
-folder you cloned). Paste this into the terminal:
+folder you cloned). Open a text editor:
 
 ```bash
 cd "/path/to/grs-gift-redeem-system"
-cat > ms_compat.h <<'EOF'
-#ifndef _MSC_VER
-#include <cstring>
-#include <ctime>
-#include <limits>
-template <size_t N> int strcpy_s(char (&d)[N], const char*s){strncpy(d,s,N);d[N-1]=0;return 0;}
-template <size_t N> int strcpy_s(char (&d)[N], size_t z, const char*s){size_t n=z<N?z:N;strncpy(d,s,n);d[n-1]=0;return 0;}
-inline struct tm* localtime_s(struct tm*o, const time_t*t){return localtime_r(t,o);}
-#endif
-EOF
+nano ms_compat.h
 ```
+
+1. Paste these 8 lines into the editor:
+   ```cpp
+   #ifndef _MSC_VER
+   #include <cstring>
+   #include <ctime>
+   #include <limits>
+   template <size_t N> int strcpy_s(char (&d)[N], const char*s){strncpy(d,s,N);d[N-1]=0;return 0;}
+   template <size_t N> int strcpy_s(char (&d)[N], size_t z, const char*s){size_t n=z<N?z:N;strncpy(d,s,n);d[n-1]=0;return 0;}
+   inline struct tm* localtime_s(struct tm*o, const time_t*t){return localtime_r(t,o);}
+   #endif
+   ```
+2. Save: press **Ctrl+O** then **Enter**, and exit with **Ctrl+X**. (Not a
+   nano fan? `gedit ms_compat.h` or `code ms_compat.h` work too.)
+3. Double-check with `cat ms_compat.h` — it should show all 8 lines.
 
 > The `#ifndef _MSC_VER` guard makes the shim **inert** when built with Visual
 > Studio, so this header never affects a Windows/MSVC build.
