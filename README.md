@@ -231,20 +231,40 @@ and `system.cpp` itself is never modified.
 
 ---
 
-### Option C — Linux / manual compile (macOS & Linux)
+### Option C — Linux (recommended)
 
-If you prefer not to use the `grs` helper, create a `ms_compat.h` file
-(contents below) in the project folder, then compile with `-include`:
+GCC doesn't ship `strcpy_s()` / `localtime_s()`, so we supply tiny
+compatibility versions through a helper header before compiling. Everything
+below is done in the **Terminal**.
+
+**Step 1 — Check your compiler**
+
+Open a **Terminal** and run:
 
 ```bash
-# 1) create ms_compat.h in the same folder as system.cpp (see contents below)
-# 2) compile & run
-g++ -std=c++11 -include ms_compat.h system.cpp -o system
-./system
+g++ --version
 ```
 
-`ms_compat.h` contents:
-```cpp
+- If it prints a version (e.g. `g++ (Ubuntu 11.4.0...)...`), GCC is
+  installed — **jump to Step 2**.
+- If it reports `command not found: g++`, install GCC for your distro:
+
+  | Distro         | Command                                      |
+  |----------------|----------------------------------------------|
+  | Debian / Ubuntu| `sudo apt update && sudo apt install -y g++` |
+  | Fedora / RHEL  | `sudo dnf install -y gcc-c++`                |
+  | Arch / Manjaro | `sudo pacman -S gcc`                         |
+
+  Check again with `g++ --version` before continuing.
+
+**Step 2 — Create the `ms_compat.h` shim (one-time setup)**
+
+Create `ms_compat.h` **in the same folder as `system.cpp`** (i.e. the project
+folder you cloned). Paste this into the terminal:
+
+```bash
+cd "/path/to/grs-gift-redeem-system"
+cat > ms_compat.h <<'EOF'
 #ifndef _MSC_VER
 #include <cstring>
 #include <ctime>
@@ -253,17 +273,39 @@ template <size_t N> int strcpy_s(char (&d)[N], const char*s){strncpy(d,s,N);d[N-
 template <size_t N> int strcpy_s(char (&d)[N], size_t z, const char*s){size_t n=z<N?z:N;strncpy(d,s,n);d[n-1]=0;return 0;}
 inline struct tm* localtime_s(struct tm*o, const time_t*t){return localtime_r(t,o);}
 #endif
+EOF
 ```
 
 > The `#ifndef _MSC_VER` guard makes the shim **inert** when built with Visual
 > Studio, so this header never affects a Windows/MSVC build.
 
+**Step 3 — Compile & run**
+
+```bash
+cd "/path/to/grs-gift-redeem-system"
+g++ -std=c++11 -include ms_compat.h system.cpp -o system
+./system
+```
+
+- The first command compiles `system.cpp` into an executable named `system`;
+  the second runs it in the terminal.
+- To re-run it later, just do `cd "/path/to/grs-gift-redeem-system" && ./system`
+  — no need to recompile unless `system.cpp` changes.
+- Once you see the `*** Main Menu ***`, type `1` to load the starting data,
+  then follow the on-screen options. Type `6` then `y` to exit.
+
+> 💡 This manual-compile method also works on macOS with the same `ms_compat.h`
+> header (just change the compiler path if needed, e.g. `g++-14`).
+
 ---
 
 ### Troubleshooting
 
-- **`command not found: grs`** → your shell hasn't loaded `~/.zshrc` yet; run
-  `source ~/.zshrc` or open a new Terminal window.
+- **`command not found: g++`** → GCC isn't installed; install it for your
+  distro — see **Option C, Step 1** above.
+- **`command not found: grs`** → your shell hasn't loaded the function yet; run
+  `source ~/.zshrc` (macOS) or `source ~/.bashrc` (Linux) or open a new
+  Terminal window.
 - **`strcpy_s` / `localtime_s` not declared** → you're compiling on macOS/Linux
   *without* the compatibility shim. Use `grs` (Option B) or the `ms_compat.h`
   method (Option C).

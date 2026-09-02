@@ -10,3 +10,7 @@
 
 # hidden to protect priviacy
 /GRS_backupV1-V8/*.cpp
+
+# manual-compile artifacts (README Option C: Linux / macOS)
+/ms_compat.h
+/system
