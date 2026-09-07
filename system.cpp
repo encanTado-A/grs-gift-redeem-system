@@ -1660,7 +1660,7 @@ int loadCredit() {
     cin.ignore(1024, '\n');
 
     while (flag_exit == false) {
-        cout << "Type \'y\' \/ \'Y\' to leave. Or \'n\' \/ \'N\' to return to menu.\nInput: ";
+        cout << "Type \'y\' / \'Y\' to leave. Or \'n\' / \'N\' to return to menu.\nInput: ";
 
 
         cin.getline(subOption, 100, '\n');
@@ -1694,6 +1694,7 @@ int loadCredit() {
             continue;
         }
     }
+    return 0;
 } // end of loadCredit()
 
 // ===================================END of R6==========================================
